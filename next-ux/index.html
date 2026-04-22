@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Next — UI/UX Mejoras</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+
+    :root {
+      --col-propuesta: #6366f1;
+      --col-definido: #f59e0b;
+      --col-encurso: #3b82f6;
+      --col-resuelto: #10b981;
+    }
+
+    body {
+      background: #0f0f13;
+      color: #e2e2e8;
+      min-height: 100vh;
+    }
+
+    .board-col {
+      min-width: 300px;
+      width: 300px;
+      flex-shrink: 0;
+    }
+
+    .col-header {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .col-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .card {
+      background: #1a1a24;
+      border: 1px solid #2a2a38;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      transition: border-color 0.15s, transform 0.1s;
+      cursor: default;
+    }
+
+    .card:hover {
+      border-color: #3f3f55;
+      transform: translateY(-1px);
+    }
+
+    .card-id {
+      font-size: 10px;
+      color: #555570;
+      font-weight: 500;
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e2f0;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .card-desc {
+      font-size: 12.5px;
+      color: #8888aa;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+
+    .card-image {
+      width: 100%;
+      border-radius: 7px;
+      margin-bottom: 10px;
+      border: 1px solid #2a2a38;
+      object-fit: cover;
+      max-height: 180px;
+    }
+
+    .card-definition {
+      background: #13131c;
+      border: 1px solid #2a2a38;
+      border-left: 3px solid var(--col-definido);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #aaaacc;
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+
+    .card-definition.encurso { border-left-color: var(--col-encurso); }
+    .card-definition.resuelto { border-left-color: var(--col-resuelto); }
+
+    .def-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #555570;
+      margin-bottom: 5px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: #222235;
+      color: #8888aa;
+      border: 1px solid #2a2a38;
+    }
+
+    .empty-col {
+      border: 1.5px dashed #2a2a38;
+      border-radius: 10px;
+      padding: 32px 16px;
+      text-align: center;
+      color: #44445a;
+      font-size: 12px;
+    }
+
+    .board-scroll {
+      overflow-x: auto;
+      padding-bottom: 24px;
+    }
+
+    .board-scroll::-webkit-scrollbar { height: 6px; }
+    .board-scroll::-webkit-scrollbar-track { background: transparent; }
+    .board-scroll::-webkit-scrollbar-thumb { background: #2a2a38; border-radius: 3px; }
+
+    .count-badge {
+      background: #222235;
+      color: #6666aa;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 20px;
+      margin-left: 4px;
+    }
+
+    /* Search */
+    .search-wrap {
+      position: relative;
+      width: 240px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #555570;
+      pointer-events: none;
+    }
+
+    #search-input {
+      background: #1a1a24;
+      border: 1px solid #2a2a38;
+      border-radius: 8px;
+      color: #e2e2f0;
+      font-size: 13px;
+      padding: 7px 12px 7px 32px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+
+    #search-input::placeholder { color: #44445a; }
+    #search-input:focus { border-color: #6366f1; }
+
+    /* Comments */
+    .comments-section {
+      margin-top: 12px;
+      border-top: 1px solid #222235;
+      padding-top: 10px;
+    }
+
+    .comments-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #44445a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .comment-textarea {
+      width: 100%;
+      background: #13131c;
+      border: 1px solid #222235;
+      border-radius: 6px;
+      color: #aaaacc;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 8px 10px;
+      resize: none;
+      outline: none;
+      min-height: 56px;
+      transition: border-color 0.15s, min-height 0.15s;
+      box-sizing: border-box;
+    }
+
+    .comment-textarea::placeholder { color: #33334a; }
+    .comment-textarea:focus {
+      border-color: #3f3f55;
+      min-height: 80px;
+    }
+
+    .comment-saved {
+      font-size: 10px;
+      color: #10b981;
+      margin-top: 4px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .comment-saved.show { opacity: 1; }
+
+    /* Highlight search match */
+    .search-highlight {
+      background: rgba(99,102,241,0.25);
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    .card.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div style="border-bottom: 1px solid #1e1e2e; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+    <div>
+      <div style="font-size: 11px; color: #555570; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">AiKit · Next</div>
+      <div style="font-size: 20px; font-weight: 700; color: #e2e2f0;">UI/UX Mejoras</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div class="search-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="search-input" type="text" placeholder="Buscar…" autocomplete="off" />
+      </div>
+      <div style="font-size: 11px; color: #44445a;" id="last-updated"></div>
+    </div>
+  </div>
+
+  <!-- Board -->
+  <div class="board-scroll" style="padding: 28px 32px 0;">
+    <div style="display: flex; gap: 20px; align-items: flex-start;" id="board">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <script>
+    const COLUMNS = [
+      { id: 'propuesta', label: 'Propuesta', color: '#6366f1', bg: 'rgba(99,102,241,0.12)',  showDef: false },
+      { id: 'definido',  label: 'Definido',  color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', showDef: true  },
+      { id: 'encurso',   label: 'En curso',  color: '#3b82f6', bg: 'rgba(59,130,246,0.12)', showDef: true  },
+      { id: 'resuelto',  label: 'Resuelto',  color: '#10b981', bg: 'rgba(16,185,129,0.12)', showDef: true  },
+    ];
+
+    const STORAGE_KEY = 'next-ux-comments';
+
+    function getComments() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+      catch { return {}; }
+    }
+
+    function saveComment(id, text) {
+      const all = getComments();
+      all[id] = text;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function highlight(str, query) {
+      if (!query) return escHtml(str);
+      const safe = escHtml(str);
+      const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return safe.replace(re, '<mark class="search-highlight">$1</mark>');
+    }
+
+    function matchesQuery(item, query) {
+      if (!query) return true;
+      const q = query.toLowerCase();
+      return (
+        item.title.toLowerCase().includes(q) ||
+        (item.description || '').toLowerCase().includes(q) ||
+        (item.tags || []).some(t => t.toLowerCase().includes(q))
+      );
+    }
+
+    async function load() {
+      const res = await fetch('data.json?t=' + Date.now());
+      return res.json();
+    }
+
+    function renderCard(item, col, query) {
+      const showDef  = col.showDef;
+      const hasImage = item.image && item.image.trim() !== '';
+      const hasDef   = item.definition && item.definition.trim() !== '';
+      const hasTags  = item.tags && item.tags.length > 0;
+      const defClass = col.id === 'encurso' ? 'encurso' : col.id === 'resuelto' ? 'resuelto' : '';
+      const comments = getComments();
+      const commentVal = escHtml(comments[item.id] || '');
+
+      return `
+        <div class="card" data-id="${item.id}">
+          <div class="card-id">#${String(item.id).padStart(3, '0')}</div>
+          <div class="card-title">${highlight(item.title, query)}</div>
+          ${item.description ? `<div class="card-desc">${highlight(item.description, query)}</div>` : ''}
+          ${hasImage ? `<img class="card-image" src="${escHtml(item.image)}" alt="" />` : ''}
+          ${showDef && hasDef ? `
+            <div class="card-definition ${defClass}">
+              <div class="def-label">Solución definida</div>
+              ${escHtml(item.definition)}
+            </div>
+          ` : ''}
+          ${hasTags ? `
+            <div class="card-tags">
+              ${item.tags.map(t => `<span class="tag">${highlight(t, query)}</span>`).join('')}
+            </div>
+          ` : ''}
+          <div class="comments-section">
+            <div class="comments-label">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Comentarios
+            </div>
+            <textarea
+              class="comment-textarea"
+              placeholder="Escribe un comentario…"
+              data-item-id="${item.id}"
+            >${commentVal}</textarea>
+            <div class="comment-saved" id="saved-${item.id}">Guardado ✓</div>
+          </div>
+        </div>
+      `;
+    }
+
+    let debounceTimer;
+
+    function attachCommentListeners() {
+      document.querySelectorAll('.comment-textarea').forEach(ta => {
+        ta.addEventListener('input', () => {
+          const id = ta.dataset.itemId;
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => {
+            saveComment(id, ta.value);
+            const badge = document.getElementById('saved-' + id);
+            if (badge) {
+              badge.classList.add('show');
+              setTimeout(() => badge.classList.remove('show'), 1500);
+            }
+          }, 600);
+        });
+      });
+    }
+
+    function applySearch(query) {
+      document.querySelectorAll('.card[data-id]').forEach(card => {
+        const id = parseInt(card.dataset.id);
+        // re-check against current items
+        const item = window._items && window._items.find(i => i.id === id);
+        if (!item) return;
+        card.classList.toggle('hidden', !matchesQuery(item, query));
+      });
+      // update count badges
+      COLUMNS.forEach(col => {
+        const colEl = document.getElementById('col-' + col.id);
+        if (!colEl) return;
+        const visible = colEl.querySelectorAll('.card:not(.hidden)').length;
+        const badge = colEl.querySelector('.count-badge');
+        if (badge) badge.textContent = visible;
+      });
+    }
+
+    async function render() {
+      const data = await load();
+      const items = data.items || [];
+      window._items = items;
+
+      const query = document.getElementById('search-input').value.trim();
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+
+      COLUMNS.forEach(col => {
+        const colItems = items.filter(i => i.status === col.label);
+
+        const colEl = document.createElement('div');
+        colEl.className = 'board-col';
+        colEl.id = 'col-' + col.id;
+
+        const visibleCount = colItems.filter(i => matchesQuery(i, query)).length;
+
+        const headerHtml = `
+          <div>
+            <span class="col-header" style="background:${col.bg}; color:${col.color};">
+              <span class="col-dot" style="background:${col.color};"></span>
+              ${col.label}
+              <span class="count-badge">${visibleCount}</span>
+            </span>
+          </div>
+        `;
+
+        let cardsHtml;
+        if (colItems.length === 0) {
+          cardsHtml = `<div class="empty-col">Sin items</div>`;
+        } else {
+          cardsHtml = colItems.map(item => {
+            const html = renderCard(item, col, query);
+            // wrap with hidden class if needed
+            if (!matchesQuery(item, query)) {
+              return html.replace('<div class="card"', '<div class="card hidden"');
+            }
+            return html;
+          }).join('');
+        }
+
+        colEl.innerHTML = headerHtml + cardsHtml;
+        board.appendChild(colEl);
+      });
+
+      if (data.updatedAt) {
+        const d = new Date(data.updatedAt);
+        document.getElementById('last-updated').textContent =
+          'Actualizado ' + d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+
+      attachCommentListeners();
+    }
+
+    // Search
+    document.getElementById('search-input').addEventListener('input', e => {
+      const query = e.target.value.trim();
+      if (window._items) applySearch(query);
+    });
+
+    render();
+    setInterval(render, 30000);
+  </script>
+</body>
+</html>
