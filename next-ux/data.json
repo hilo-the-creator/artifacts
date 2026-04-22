@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "Revisión general de responsive",
+      "description": "Auditoría del comportamiento responsive en las vistas principales del producto Next. Detectar roturas, inconsistencias de layout y elementos que no adaptan bien a mobile.",
+      "status": "Propuesta",
+      "solution": "",
+      "tags": ["responsive", "mobile", "layout"],
+      "image": "img-001.png",
+      "createdAt": "2026-04-22"
+    }
+    ,{
+      "id": 2,
+      "title": "Rework del panel de channel settings",
+      "description": "Revisión del panel de configuración de canal. Actualmente muestra un selector de agente, tabs (Soul / Rules / User / Memory / Tools) y un textarea grande casi vacío. El espacio está muy desaprovechado y la jerarquía visual es mejorable.",
+      "status": "Propuesta",
+      "solution": "",
+      "tags": ["channel-settings", "panel", "layout"],
+      "image": "img-002.png",
+      "createdAt": "2026-04-22"
+    },
+    {
+      "id": 3,
+      "title": "Rediseño de proyectos",
+      "description": "Revisión del área de proyectos. Estructura actual, jerarquía de información y flujos de creación/gestión de proyectos necesitan una vuelta de tuerca.",
+      "status": "Propuesta",
+      "solution": "",
+      "tags": ["proyectos", "navigation", "architecture"],
+      "image": "img-003.png",
+      "createdAt": "2026-04-22"
+    },
+    {
+      "id": 4,
+      "title": "Centrar modal",
+      "description": "Los modales (ej: 'Create Category') aparecen desplazados hacia arriba en lugar de centrados vertical y horizontalmente en la pantalla. Afecta a la percepción de polish del producto.",
+      "status": "Propuesta",
+      "solution": "",
+      "tags": ["modal", "layout", "centering"],
+      "image": "img-004.png",
+      "createdAt": "2026-04-22"
+    }
+  ]
+}
