@@ -39,6 +39,16 @@
       "tags": ["modal", "layout", "centering"],
       "image": "img-004.png",
       "createdAt": "2026-04-22"
+    },
+    {
+      "id": 5,
+      "title": "Los agentes no pueden generar imágenes",
+      "description": "Los agentes (asistentes configurados en el canal) no tienen acceso a la generación de imágenes. El modelo puede describir o intentar generarla pero la acción no funciona desde el contexto de agente.",
+      "status": "Propuesta",
+      "solution": "",
+      "tags": ["agentes", "imagen", "limitación"],
+      "image": "",
+      "createdAt": "2026-04-23"
     }
   ]
 }
